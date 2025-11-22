@@ -1,0 +1,22 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type ProgresoProyectoType {
+  completadas: Int!
+  nombre: String!
+  progreso: Float!
+  proyectoId: Int!
+  totalTareas: Int!
+}
+
+type Query {
+  progresoProyectos: [ProgresoProyectoType!]!
+  tareasPorEstado: TareasPorEstadoType!
+}
+
+type TareasPorEstadoType {
+  completada: Int!
+  en_progreso: Int!
+  pendiente: Int!
+}
