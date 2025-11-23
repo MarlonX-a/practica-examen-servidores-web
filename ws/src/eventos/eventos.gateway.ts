@@ -16,6 +16,7 @@ export class EventosGateway {
   }
 
   emitirActualizacion(payload: any) {
+    console.log('🔥 Emisión desde Gateway:', payload);
     this.server.emit('actualizacion-dashboard', payload);
   }
 }

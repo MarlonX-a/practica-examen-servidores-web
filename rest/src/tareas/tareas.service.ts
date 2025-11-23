@@ -33,7 +33,7 @@ export class TareasService {
       proyecto
     })
     const creado = await this.tareaRepo.save(tarea);
-    await axios.post('http://localhost:3002/eventos/noficar', {
+    await axios.post('http://localhost:3002/eventos/notificar', {
       origen: 'tarea',
       accion: 'creado',
       data: creado

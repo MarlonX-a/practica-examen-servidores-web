@@ -7,7 +7,8 @@ export class EventosController {
 
   @Post('notificar')
   notificarEvento(@Body() body: any) {
+    console.log('📩 Llegó POST:', body);
     this.eventosGateway.emitirActualizacion(body);
-    return { message: 'Notificado al WebSocket', payload: body };
+    return { message: 'Notificado al WebSocket', body };
   }
 }
