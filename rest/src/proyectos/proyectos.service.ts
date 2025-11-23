@@ -4,6 +4,7 @@ import { UpdateProyectoDto } from './dto/update-proyecto.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Proyecto } from './entities/proyecto.entity';
 import { Repository } from 'typeorm';
+import axios from 'axios'
 
 @Injectable()
 export class ProyectosService {
@@ -25,7 +26,13 @@ export class ProyectosService {
     }
 
     const proyecto = this.proyectoRepo.create(createProyectoDto);
-    return this.proyectoRepo.save(proyecto);
+    const creado = await this.proyectoRepo.save(proyecto);
+    await axios.post('http://localhost:3002/eventos/notificar', {
+      origen: 'proyecto',
+      accion: 'creado',
+      data: creado,
+    })
+    return creado;
   }
 
   async findAll() {
@@ -108,7 +115,12 @@ export class ProyectosService {
 
     await this.proyectoRepo.remove(proyecto);
 
-    return { message: 'Proyecto eliminado correctamente'};
+    await axios.post('http://localhost:3002/eventos/notificar', {
+      origen: 'proyecto',
+      action: 'eliminado',
+      data: proyecto,
+    });
 
+    return { message: 'Proyecto eliminado correctamente'};
   }
 }

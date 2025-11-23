@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Tarea } from './entities/tarea.entity';
 import { Repository } from 'typeorm';
 import { Proyecto } from 'src/proyectos/entities/proyecto.entity';
+import axios from 'axios'
 
 @Injectable()
 export class TareasService {
@@ -31,7 +32,13 @@ export class TareasService {
       ...createTareaDto,
       proyecto
     })
-    return this.tareaRepo.save(tarea);
+    const creado = await this.tareaRepo.save(tarea);
+    await axios.post('http://localhost:3002/eventos/noficar', {
+      origen: 'tarea',
+      accion: 'creado',
+      data: creado
+    })
+    return creado;
   }
 
   async findAll() {
@@ -86,8 +93,15 @@ export class TareasService {
     }
 
     Object.assign(tarea, updateTareaDto);
+    const actualizada = await this.tareaRepo.save(tarea);
 
-    return this.tareaRepo.save(tarea);
+    await axios.post('http://localhost:3002/eventos/notificar', {
+      origin: 'tarea',
+      accion: 'actualizada',
+      data: actualizada,
+    })
+
+    return actualizada;
   }
 
   async remove(id: number) {
@@ -102,6 +116,13 @@ export class TareasService {
     }
 
     await this.tareaRepo.remove(tarea);
+
+    await axios.post('http://localhost:3002/eventos/notificar', {
+      origen: 'tarea',
+      accion: 'eliminada',
+      data: tarea,
+    })
+
     return {message: 'Tarea eliminada correctamente'};
   }
 }
